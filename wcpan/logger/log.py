@@ -52,14 +52,7 @@ def setup(log_name_list: Iterable[str],
           file_path: str = None) -> List[logging.Logger]:
     name_list = [name for name in log_name_list]
     max_name_size = max((len(name) for name in name_list))
-    log_format = (
-        '{{asctime}}|'
-        '{{threadName:_<10.10}}|'
-        '{{levelname:_<1.1}}|'
-        '{{name:_<{size}.{size}}}|'
-        '{{message}}'
-    ).format(size=max_name_size)
-    formatter = logging.Formatter(log_format, style='{')
+    formatter = DynamicFormatter(name_size=max_name_size, thread_name_size=10)
     handler = create_handler(file_path, formatter)
     loggers = [create_logger(name, handler) for name in log_name_list]
     return loggers
@@ -83,3 +76,38 @@ def create_logger(name: str, handler: logging.Handler) -> logging.Logger:
     logger.setLevel(logging.DEBUG)
     logger.addHandler(handler)
     return logger
+
+
+class DynamicFormatter(object):
+
+    FORMAT = (
+        '{{asctime}}|'
+        '{{threadName:_<{thread_name_size}.{thread_name_size}}}|'
+        '{{levelname:_<1.1}}|'
+        '{{name:_<{name_size}.{name_size}}}|'
+        '{{message}}'
+    )
+
+    def __init__(self, name_size: int, thread_name_size: int):
+        self._name_size = name_size
+        self._thread_name_size = thread_name_size
+        self._formatter = self._create_formatter()
+
+    def _create_formatter(self):
+        format = self.FORMAT.format(
+            name_size=self._name_size,
+            thread_name_size=self._thread_name_size,
+        )
+        return logging.Formatter(format, style='{')
+
+    def format(self, record: logging.LogRecord):
+        changed = False
+        if len(record.name) > self._name_size:
+            self._name_size = max(len(record.name), self._name_size)
+            changed = True
+        if record.threadName and len(record.threadName) > self._thread_name_size:
+            self._thread_name_size = max(len(record.threadName), self._thread_name_size)
+            changed = True
+        if changed:
+            self._formatter = self._create_formatter()
+        return self._formatter.format(record)
