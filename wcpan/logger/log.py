@@ -1,7 +1,7 @@
 import datetime
 import logging
-import logging.handlers as lh
-from typing import Any, Generator, Iterable, List, Optional
+from logging.handlers import TimedRotatingFileHandler
+from typing import Any, Iterable, List, Optional
 
 
 class Logger(object):
@@ -50,9 +50,16 @@ def EXCEPTION(name: str, exception: Exception = None) -> Logger:
 
 def setup(log_name_list: Iterable[str],
           file_path: str = None) -> List[logging.Logger]:
-    formatter = logging.Formatter(
-        '{asctime}|{threadName:_<10.10}|{levelname:_<1.1}|{name:_<16.16}|{message}',
-        style='{')
+    name_list = [name for name in log_name_list]
+    max_name_size = max((len(name) for name in name_list))
+    log_format = (
+        '{{asctime}}|'
+        '{{threadName:_<10.10}}|'
+        '{{levelname:_<1.1}}|'
+        '{{name:_<{size}.{size}}}|'
+        '{{message}}'
+    ).format(size=max_name_size)
+    formatter = logging.Formatter(log_format, style='{')
     handler = create_handler(file_path, formatter)
     loggers = [create_logger(name, handler) for name in log_name_list]
     return loggers
@@ -61,10 +68,8 @@ def setup(log_name_list: Iterable[str],
 def create_handler(path: Optional[str],
                    formatter: logging.Formatter) -> logging.Handler:
     if path:
-        # alias
-        TRFHandler = lh.TimedRotatingFileHandler
         # rotate on Sunday
-        handler = TRFHandler(path, when='w6', atTime=datetime.time())
+        handler = TimedRotatingFileHandler(path, when='w6', atTime=datetime.time())
     else:
         handler = logging.StreamHandler()
     handler.setLevel(logging.DEBUG)
