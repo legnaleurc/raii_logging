@@ -50,9 +50,7 @@ def EXCEPTION(name: str, exception: Exception = None) -> Logger:
 
 def setup(log_name_list: Iterable[str],
           file_path: str = None) -> List[logging.Logger]:
-    name_list = [name for name in log_name_list]
-    max_name_size = max((len(name) for name in name_list))
-    formatter = DynamicFormatter(name_size=max_name_size, thread_name_size=10)
+    formatter = DynamicFormatter()
     handler = create_handler(file_path, formatter)
     loggers = [create_logger(name, handler) for name in log_name_list]
     return loggers
@@ -88,9 +86,9 @@ class DynamicFormatter(object):
         '{{message}}'
     )
 
-    def __init__(self, name_size: int, thread_name_size: int):
-        self._name_size = name_size
-        self._thread_name_size = thread_name_size
+    def __init__(self):
+        self._name_size = 0
+        self._thread_name_size = 0
         self._formatter = self._create_formatter()
 
     def _create_formatter(self):
