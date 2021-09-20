@@ -1,4 +1,3 @@
-from contextlib import redirect_stderr
 from tempfile import NamedTemporaryFile
 from unittest import TestCase
 
@@ -21,7 +20,7 @@ class LogTestCase(TestCase):
 
             fio.seek(0)
             line = fio.readline()
-            pos = line.find(b'|short____|')
+            pos = line.find(b'|short|')
             self.assertGreaterEqual(pos, 0)
             line = fio.readline()
             pos = line.find(b'|long.long|')
