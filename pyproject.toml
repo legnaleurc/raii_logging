@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "wcpan-logging"
+version = "1.5.0"
+description = "configuration generator for builtin logging module"
+authors = ["Wei-Cheng Pan <legnaleurc@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/legnaleurc/wcpan.logging"
+packages = [{include = "wcpan"}]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development",
+    "Topic :: System :: Logging",
+    "Typing :: Typed",
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
