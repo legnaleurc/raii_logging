@@ -1,7 +1,7 @@
 from tempfile import NamedTemporaryFile
 from unittest import TestCase
 
-from wcpan.logger import setup, INFO
+from wcpan.logging import setup, INFO
 
 
 class LogTestCase(TestCase):
