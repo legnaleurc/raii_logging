@@ -1,5 +1,8 @@
-__version__ = "1.5.0"
-__version_info__ = (1, 5, 0)
+from importlib.metadata import version
+
+from .builder import ConfigBuilder
 
 
-from .log import setup, DEBUG, INFO, WARNING, ERROR, CRITICAL, EXCEPTION
+version(__package__ or __name__)
+
+__all__ = ("ConfigBuilder",)
