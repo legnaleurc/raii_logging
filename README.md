@@ -1,14 +1,16 @@
-## wcpan.logger
+## wcpan.logging
 
-A RAII style logging module.
+A configuration generator for builtin logging module.
 
 ```python
-from wcpan.logger import setup, DEBUG
+import logging
 
-setup([
-    'module_name_1',
-    'module_name_2',
-], '/var/log/your.log')
+from wcpan.logging import ConfigBuilder
 
-DEBUG(__name__) << 'message'
+
+logging.dictConfig(
+    ConfigBuilder(path="/your/log", level="DEBUG")
+    .add("moduleA", "moduleB")
+    .add("moduleB", level="INFO")
+)
 ```
