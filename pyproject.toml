@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wcpan-logging"
-version = "1.5.0"
+version = "2.0.0"
 description = "configuration generator for builtin logging module"
 authors = ["Wei-Cheng Pan <legnaleurc@gmail.com>"]
 license = "MIT"
