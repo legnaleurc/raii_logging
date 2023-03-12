@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from logging import getLogger
+from logging import basicConfig, getLogger, getLoggerClass
 from logging.config import dictConfig
 from tempfile import NamedTemporaryFile
 from typing import TextIO, cast
@@ -9,6 +9,10 @@ from wcpan.logging import ConfigBuilder
 
 
 class BasicTestCase(TestCase):
+    def setUp(self) -> None:
+        basicConfig(force=True)
+        getLoggerClass().manager.loggerDict.clear()
+
     def test_default_level(self):
         with tmp() as fio:
             dictConfig(ConfigBuilder(path=fio.name).add("a").to_dict())
@@ -43,6 +47,10 @@ class BasicTestCase(TestCase):
 
 
 class FieldTestCase(TestCase):
+    def setUp(self) -> None:
+        basicConfig(force=True)
+        getLoggerClass().manager.loggerDict.clear()
+
     def test_processes(self):
         with tmp() as fio:
             dictConfig(ConfigBuilder(path=fio.name, processes=True).add("a").to_dict())
@@ -70,6 +78,10 @@ class FieldTestCase(TestCase):
 
 
 class PropagationTestCase(TestCase):
+    def setUp(self) -> None:
+        basicConfig(force=True)
+        getLoggerClass().manager.loggerDict.clear()
+
     def test_single_level(self):
         with tmp() as fio:
             dictConfig(ConfigBuilder(path=fio.name, level="N").add("a").to_dict())
