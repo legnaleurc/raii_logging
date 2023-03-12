@@ -77,7 +77,7 @@ class PropagationTestCase(TestCase):
     def test_multiple_level(self):
         with tmp() as fio:
             dictConfig(
-                ConfigBuilder(path=fio.name, level="N")
+                ConfigBuilder(path=fio.name)
                 .add("a", level="D")
                 .add("a.b", level="I")
                 .to_dict()
@@ -85,10 +85,14 @@ class PropagationTestCase(TestCase):
             getLogger("a").debug("z")
             getLogger("a.b").info("y")
             getLogger("a.b").debug("x")
+            getLogger("a.b.c").debug("x")
+            getLogger("b").debug("w")
+            getLogger("b").warning("w")
             logs = parse_file(fio)
-        self.assertEqual(len(logs), 2)
+        self.assertEqual(len(logs), 3)
         self.assertEqual(logs[0], ("D", "a", "z"))
         self.assertEqual(logs[1], ("I", "a.b", "y"))
+        self.assertEqual(logs[2], ("W", "b__", "w"))
 
 
 @contextmanager
