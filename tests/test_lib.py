@@ -34,6 +34,13 @@ class BasicTestCase(TestCase):
         self.assertEqual(logs[1], ("W", "a.a", "test"))
         self.assertEqual(logs[2], ("W", "a__", "test"))
 
+    def test_rotation(self):
+        with tmp() as fio:
+            dictConfig(ConfigBuilder(path=fio.name, rotate=True).to_dict())
+            getLogger("a").warning("test")
+            logs = parse_file(fio)
+        self.assertEqual(logs[0], ("W", "a", "test"))
+
 
 class FieldTestCase(TestCase):
     def test_processes(self):
