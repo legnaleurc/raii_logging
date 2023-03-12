@@ -66,7 +66,8 @@ def create_handler(*, path: StrPath | None, rotate: bool) -> AnyDict:
         }
     elif rotate:
         return {
-            "class": "logging.handlers.RotatingFileHandler",
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "filename": str(path),
             "when": "w6",
         }
     else:
