@@ -146,7 +146,7 @@ def tmp():
         yield cast(TextIO, fio)
 
 
-def parse_file(fio: TextIO) -> list[tuple[str]]:
+def parse_file(fio: TextIO) -> list[tuple[str, ...]]:
     fio.flush()
     fio.seek(0)
     return [tuple(line.rstrip().split("|")[1:]) for line in fio]
