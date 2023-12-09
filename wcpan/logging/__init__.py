@@ -1,6 +1,6 @@
 from importlib.metadata import version
 
-from .builder import ConfigBuilder
+from .builder import ConfigBuilder as ConfigBuilder
 
 
 __version__ = version(__package__ or __name__)
