@@ -15,12 +15,14 @@ class ConfigBuilder:
         level: LevelName | None = None,
         path: StrPath | None = None,
         rotate: bool = False,
+        rotate_when: str = "h",
         processes: bool = False,
         threads: bool = False
     ) -> None:
         self._level: LevelName | None = level
         self._path = path
         self._rotate = rotate
+        self._rotate_when = rotate_when
         self._processes = processes
         self._threads = threads
         self._loggers: dict[str, LevelName | None] = {}
@@ -31,7 +33,9 @@ class ConfigBuilder:
         return self
 
     def to_dict(self) -> AnyDict:
-        handler = create_handler(path=self._path, rotate=self._rotate)
+        handler = create_handler(
+            path=self._path, rotate=self._rotate, rotate_when=self._rotate_when
+        )
         handler["formatter"] = FORMATTER_ID
         root = create_root(level=self._level)
         root["handlers"] = [HANDLER_ID]
@@ -59,7 +63,7 @@ def create_root(*, level: LevelName | None) -> AnyDict:
     return root
 
 
-def create_handler(*, path: StrPath | None, rotate: bool) -> AnyDict:
+def create_handler(*, path: StrPath | None, rotate: bool, rotate_when: str) -> AnyDict:
     if not path:
         return {
             "class": "logging.StreamHandler",
@@ -68,7 +72,7 @@ def create_handler(*, path: StrPath | None, rotate: bool) -> AnyDict:
         return {
             "class": "logging.handlers.TimedRotatingFileHandler",
             "filename": str(path),
-            "when": "w6",
+            "when": rotate_when,
         }
     else:
         return {
